@@ -11,9 +11,12 @@ import MapKit
 
 class Annotation: NSObject, MKAnnotation {
     
-    var coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D()
+    //required
+    var coordinate = CLLocationCoordinate2D()
+    
+    //your defined properties
     var title: String?
     var subtitle: String?
     
-    
 }
+

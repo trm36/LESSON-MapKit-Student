@@ -15,7 +15,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     @IBOutlet weak var mapView: MKMapView!
     var locationManager = CLLocationManager()
     var routePolyline: MKPolyline?
-
+    
     // MARK: - VIEW CONTROLLER LIFE CYCLE METHODS
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,15 +28,15 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         mapView.region = utahRegion
         
         
-        for coordinate in devMountainUtahLocationCoordinates() {
+        for nationalPark in utahNationalParks() {
             let annonation = Annotation()
-            annonation.coordinate = coordinate
-            annonation.title = "DM"
+            annonation.coordinate = nationalPark.coordinate
+            annonation.title = nationalPark.name
             mapView.addAnnotation(annonation)
         }
         
-        let utahPolygon = MKPolygon(coordinates: utahCoordinates(), count: utahCoordinates().count)
-        mapView.add(utahPolygon)
+        //        let utahPolygon = MKPolygon(coordinates: utahCoordinates(), count: utahCoordinates().count)
+        //        mapView.add(utahPolygon)
     }
     
     
@@ -83,16 +83,17 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        if let title = annotation.title, title == "DM" {
-            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "DevMountain")
+        if annotation is Annotation {
+            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "NPS")
             
             if let dequeuedAnnotationView = annotationView {
                 dequeuedAnnotationView.annotation = annotation
             } else {
-                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "DevMountain")
+                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "NPS")
             }
             
-            annotationView?.image = #imageLiteral(resourceName: "DMAnnotation")
+            annotationView?.image = UIImage(named: "NPS")
+            annotationView?.canShowCallout = true
             
             return annotationView
         }
@@ -112,6 +113,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         
         mapView.showsUserLocation = true
     }
+    
     
     func getDrivingDirectionsFromCurrentLocation() {
         
@@ -155,7 +157,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     func utahCoordinates() -> [CLLocationCoordinate2D] {
         
         /***********************************************
- 
+         
          0 -------- 1            0 - UT, ID, NV
          |          |            1 - UT, ID, WY
          |          |            2 - UT, WY
@@ -169,8 +171,8 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
          |                  |
          |                  |
          5 ---------------- 4
- 
-        **********************************************/
+         
+         **********************************************/
         
         let point0 = CLLocationCoordinate2D(latitude: 41.99386, longitude: -114.04147)
         let point1 = CLLocationCoordinate2D(latitude: 42.00162, longitude: -111.04675)
@@ -181,7 +183,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         
         return [point0, point1, point2, point3, point4, point5]
     }
-
+    
     func utahCenterCoordinate() -> CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: 39.572317, longitude: -111.646970)
     }
@@ -191,6 +193,16 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         let provoCoordinate = CLLocationCoordinate2D(latitude: 40.226319, longitude: -111.660941)
         return [slcCoordinate, provoCoordinate]
     }
-
+    
+    func utahNationalParks() -> [(name: String, coordinate: CLLocationCoordinate2D)] {
+        let zion = (name: "Zion", coordinate: CLLocationCoordinate2D(latitude: 37.30, longitude: -113.05))
+        let bryceCanyon = (name: "Bryce Canyon", coordinate: CLLocationCoordinate2D(latitude: 37.57, longitude: -112.18))
+        let canyonlands = (name: "Canyonlands", coordinate: CLLocationCoordinate2D(latitude: 38.2, longitude: -109.93))
+        let capitolReef = (name: "Capitol Reef", coordinate: CLLocationCoordinate2D(latitude: 38.2, longitude: -111.17))
+        let arches = (name: "Arches", coordinate: CLLocationCoordinate2D(latitude: 38.68, longitude: -109.57))
+        
+        return [zion, bryceCanyon, canyonlands, capitolReef, arches]
+    }
+    
 }
 
