@@ -27,7 +27,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         
         mapView.region = utahRegion
         
-        
         for nationalPark in utahNationalParks() {
             let annonation = Annotation()
             annonation.coordinate = nationalPark.coordinate
@@ -35,11 +34,10 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             mapView.addAnnotation(annonation)
         }
         
-        //        let utahPolygon = MKPolygon(coordinates: utahCoordinates(), count: utahCoordinates().count)
-        //        mapView.add(utahPolygon)
+        let utahPolygon = MKPolygon(coordinates: utahCoordinates(), count: utahCoordinates().count)
+        mapView.add(utahPolygon)
     }
-    
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -107,20 +105,19 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         
-        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
+        if CLLocationManager.locationServicesEnabled() {
             locationManager.startUpdatingLocation()
+            mapView.showsUserLocation = true
         }
-        
-        mapView.showsUserLocation = true
     }
-    
     
     func getDrivingDirectionsFromCurrentLocation() {
         
         let drivingRouteRequest = MKDirectionsRequest()
         drivingRouteRequest.transportType = .automobile
         drivingRouteRequest.source = MKMapItem(placemark: MKPlacemark(coordinate: mapView.userLocation.coordinate))
-        drivingRouteRequest.destination = MKMapItem(placemark: MKPlacemark(coordinate: devMountainUtahLocationCoordinates()[0]))
+        let zion = utahNationalParks()[0]
+        drivingRouteRequest.destination = MKMapItem(placemark: MKPlacemark(coordinate: zion.coordinate))
         
         let drivingRouteDirections = MKDirections(request: drivingRouteRequest)
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
@@ -128,7 +125,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             DispatchQueue.main.async {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
             }
-            
             
             guard let response = response else {
                 print("\(String(describing: error?.localizedDescription))")
@@ -138,7 +134,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             guard let firstRoute = response.routes.first else {
                 print("No Routes")
                 return
-                
             }
             
             if let routePolyline = self.routePolyline {
@@ -186,12 +181,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     
     func utahCenterCoordinate() -> CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: 39.572317, longitude: -111.646970)
-    }
-    
-    func devMountainUtahLocationCoordinates() -> [CLLocationCoordinate2D] {
-        let slcCoordinate = CLLocationCoordinate2D(latitude: 40.761870, longitude: -111.890621)
-        let provoCoordinate = CLLocationCoordinate2D(latitude: 40.226319, longitude: -111.660941)
-        return [slcCoordinate, provoCoordinate]
     }
     
     func utahNationalParks() -> [(name: String, coordinate: CLLocationCoordinate2D)] {

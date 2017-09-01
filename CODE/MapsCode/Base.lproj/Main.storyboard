@@ -28,7 +28,7 @@
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="t5F-Id-P73"/>
-                                    <barButtonItem title="Display Route To DevMountain" id="0MX-Ru-7Kf">
+                                    <barButtonItem title="Display Route To Zion" id="0MX-Ru-7Kf">
                                         <connections>
                                             <action selector="showRouteButtonTapped" destination="BYZ-38-t0r" id="73j-kk-bKE"/>
                                         </connections>
