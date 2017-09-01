@@ -23,7 +23,7 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We use location to display your position on the map.</string>
+	<string>**YOUR LOCATION USAGE** **REASON HERE**</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
