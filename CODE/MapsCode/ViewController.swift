@@ -23,21 +23,18 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         
         //each degree of lat ~69 miles
         //each degree of long depends on current latitude (range from 0-69 miles)
-        let utahRegion = MKCoordinateRegion(center: utahCenterCoordinate(), span: MKCoordinateSpan(latitudeDelta: 6, longitudeDelta: 6))
+        let utahRegion = MKCoordinateRegion(center: utahCenterCoordinate(), span: MKCoordinateSpan(latitudeDelta: 6.5, longitudeDelta: 6.5))
         
         mapView.region = utahRegion
         
         for nationalPark in utahNationalParks() {
-            let annonation = Annotation()
-            annonation.coordinate = nationalPark.coordinate
-            annonation.title = nationalPark.name
-            mapView.addAnnotation(annonation)
+            mapView.addAnnotation(nationalPark)
         }
         
         let utahPolygon = MKPolygon(coordinates: utahCoordinates(), count: utahCoordinates().count)
         mapView.add(utahPolygon)
     }
-
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -81,17 +78,18 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        if annotation is Annotation {
-            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "NPS")
+        if annotation is NationalPark {
+            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "Marker") as? MKMarkerAnnotationView
             
             if let dequeuedAnnotationView = annotationView {
                 dequeuedAnnotationView.annotation = annotation
             } else {
-                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "NPS")
+                annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "Marker")
             }
             
-            annotationView?.image = UIImage(named: "NPS")
-            annotationView?.canShowCallout = true
+            annotationView?.titleVisibility = .visible
+            annotationView?.glyphImage = UIImage(named: "Tree")
+            annotationView?.markerTintColor = UIColor(red: 78.0/255.0, green: 114.0/255.0, blue: 72.0/255.0, alpha: 1.0)
             
             return annotationView
         }
@@ -180,15 +178,15 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     }
     
     func utahCenterCoordinate() -> CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: 39.572317, longitude: -111.646970)
+        return CLLocationCoordinate2D(latitude: 39.507282, longitude: -111.557079)
     }
     
-    func utahNationalParks() -> [(name: String, coordinate: CLLocationCoordinate2D)] {
-        let zion = (name: "Zion", coordinate: CLLocationCoordinate2D(latitude: 37.30, longitude: -113.05))
-        let bryceCanyon = (name: "Bryce Canyon", coordinate: CLLocationCoordinate2D(latitude: 37.57, longitude: -112.18))
-        let canyonlands = (name: "Canyonlands", coordinate: CLLocationCoordinate2D(latitude: 38.2, longitude: -109.93))
-        let capitolReef = (name: "Capitol Reef", coordinate: CLLocationCoordinate2D(latitude: 38.2, longitude: -111.17))
-        let arches = (name: "Arches", coordinate: CLLocationCoordinate2D(latitude: 38.68, longitude: -109.57))
+    func utahNationalParks() -> [NationalPark] {
+        let zion = NationalPark(name: "Zion", coordinate: CLLocationCoordinate2D(latitude: 37.30, longitude: -113.05))
+        let bryceCanyon = NationalPark(name: "Bryce Canyon", coordinate: CLLocationCoordinate2D(latitude: 37.57, longitude: -112.18))
+        let canyonlands = NationalPark(name: "Canyonlands", coordinate: CLLocationCoordinate2D(latitude: 38.2, longitude: -109.93))
+        let capitolReef = NationalPark(name: "Capitol Reef", coordinate: CLLocationCoordinate2D(latitude: 38.2, longitude: -111.17))
+        let arches = NationalPark(name: "Arches", coordinate: CLLocationCoordinate2D(latitude: 38.68, longitude: -109.57))
         
         return [zion, bryceCanyon, canyonlands, capitolReef, arches]
     }
